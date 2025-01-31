@@ -1,16 +1,13 @@
 const productRepository = require('../repository/productRepository');
-const ApiResponse = require('../models/ApiResponse');
+const Product = require('../models/Product');
 
-const createProduct = async (product) => {
-  try {
-    const newProduct = await productRepository.createProduct(product);
-    return new ApiResponse('success', newProduct, 'Product successfully saved');
-  } catch (err) {
-    console.error(err);
-    throw new Error('Error saving product');
-  }
+const createProduct = async ({ name, description, category, material, color, price }) => {
+    const totalProducts = await productRepository.countProducts();
+    const product_code = `PRO_${totalProducts + 1}`;
+
+    const newProduct = new Product(product_code, name, description, category, material, color, price);
+    
+    return await await productRepository.saveProduct(newProduct);
 };
 
-module.exports = {
-  createProduct,
-};
+module.exports = { createProduct };
